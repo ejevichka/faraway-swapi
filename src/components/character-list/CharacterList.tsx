@@ -1,12 +1,15 @@
 import React, { useState, useMemo, useEffect } from "react";
 import cache from "~/utils/cache";
 import {
-  FixedSizeList as List,
+  FixedSizeList as OriginalFixedSizeList,
   type ListChildComponentProps,
 } from "react-window";
 import { TPerson } from "~/lib/api";
 import { gsap } from "gsap-trial";
 import CharacterListRow from "./RenderRow";
+
+// Cast the FixedSizeList so that TypeScript treats it as a valid JSX component.
+const FixedSizeList = OriginalFixedSizeList as unknown as React.FC<any>;
 
 const CharacterList = ({
   data,
@@ -52,13 +55,9 @@ const CharacterList = ({
     );
 
     if (isClient) {
-      data.forEach((character) => {
-        const address = character.url.split("/").slice(-2, -1)[0]; // Extract address from the URL
-        const savedCharacterDetails = cache.get(`characterDetails-${address}`);
-        if (savedCharacterDetails && address !== undefined) {
-          // Overwrite the character if there is cached data.
-          // (You might want a more robust merge/update strategy in a real app.)
-          const index = parseInt(address, 10) - 1;
+      data.forEach((_character, index) => {
+        const savedCharacterDetails = cache.get(`${index + 1}`);
+        if (savedCharacterDetails) {
           filteredCharacters[index] = savedCharacterDetails;
         }
       });
@@ -66,7 +65,6 @@ const CharacterList = ({
     return filteredCharacters;
   }, [data, filter, isClient]);
 
-  // Extracted row renderer using CharacterListRow
   const renderRow = ({ index, style }: ListChildComponentProps) => {
     const character = filteredAndSortedData[index];
     const rowStyle = { ...style, height: containerHeight };
@@ -86,14 +84,14 @@ const CharacterList = ({
         style={{ overflow: "auto", height: "100vh", marginTop: "400px" }}
       >
         <div className="flair flair--3"></div>
-        <List
+        <FixedSizeList
           height={containerHeight}
           itemCount={filteredAndSortedData.length}
           itemSize={containerHeight}
           width="100%"
         >
           {renderRow}
-        </List>
+        </FixedSizeList>
       </div>
     </>
   );

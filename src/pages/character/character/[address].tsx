@@ -23,24 +23,21 @@ type DetailPageProps = {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   let allPaths: { params: { chain: string; address: string } }[] = [];
-  let nextUrl = ${API_URL}; // Initial URL for fetching people
+  let nextUrl = API_URL;
 
   try {
-    // Loop to fetch all pages
     while (nextUrl) {
       const response = await fetch(nextUrl);
       const peopleData: TPeopleResponse = await response.json();
 
-      // Generate paths for the current page of results
       const paths = peopleData.results.map((person) => ({
         params: {
-          chain: "1", // Assuming chain is not used, adjust if needed
-          address: person.url.split("/").pop() || "", // Use the last part of the URL as the address (ID)
+          chain: "1",
+          address: person.url.split("/").pop() || "",
         },
       }));
 
       allPaths = [...allPaths, ...paths];
-      // If there's a next page, set the URL for the next page, otherwise exit loop
       if (peopleData.next) {
         nextUrl = peopleData.next;
       } else {
@@ -67,8 +64,7 @@ export const getStaticProps: GetStaticProps<DetailPageProps> = async ({
   try {
     const { address } = params as { chain: string; address: string };
 
-    // Fetch the specific person based on the address (which is the character's ID)
-    const response = await fetch(${API_URL}${address}/);
+    const response = await fetch(`${API_URL}${address}/`);
     const characterDetails: TPerson = await response.json();
 
     return {
@@ -95,7 +91,7 @@ const DetailPage = ({
 
   useEffect(() => {
     // Load character details from localStorage
-    const savedCharacterDetails = cache.get(characterDetails-${address});
+    const savedCharacterDetails = cache.get(`characterDetails-${address}`);
 
     if (savedCharacterDetails) {
       // If character details are in localStorage, use them
@@ -104,7 +100,7 @@ const DetailPage = ({
       // If not, make the API request and save to localStorage
       if (characterDetails) {
         setEditableCharacterDetails(characterDetails);
-        cache.set(characterDetails-${address}, characterDetails);
+        cache.set(`characterDetails-${address}`, characterDetails);
       }
     }
   }, [address, characterDetails]);
@@ -124,7 +120,7 @@ const DetailPage = ({
   const handleSaveChanges = () => {
     if (editableCharacterDetails) {
       cache.set(
-        characterDetails-${address},
+        `characterDetails-${address}`,
         editableCharacterDetails as TPerson,
       );
       setSnackbarOpen(true);
