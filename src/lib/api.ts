@@ -49,7 +49,6 @@ export const fetchPeople = async (page: number = 1): Promise<TPeopleResponse> =>
 (async () => {
   try {
     const peopleData = await fetchPeople();
-    console.log(peopleData.results); // Logs the array of Star Wars characters
   } catch (error) {
     console.error("Error fetching Star Wars people:", error);
   }

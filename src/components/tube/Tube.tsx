@@ -18,7 +18,6 @@ const TubeExperience: React.FC = () => {
     const ww = window.innerWidth;
     const wh = window.innerHeight;
 
-    // --- Renderer ---
     const renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: true,
@@ -34,15 +33,11 @@ const TubeExperience: React.FC = () => {
     // --- Clock ---
     const clock = new THREE.Clock();
 
-    // --- Camera & Camera Group ---
     const camera = new THREE.PerspectiveCamera(45, ww / wh, 0.001, 200);
-    // We'll use a Group to ease camera movement along the tube path.
     const cameraGroup = new THREE.Group();
     cameraGroup.add(camera);
     scene.add(cameraGroup);
 
-    // --- Tube Path & Geometry ---
-    // Points for the tube (adapted from your code)
     const pointsArray = [
       [10, 89, 0],
       [50, 88, 10],
@@ -60,10 +55,8 @@ const TubeExperience: React.FC = () => {
     const path = new THREE.CatmullRomCurve3(points);
     path.tension = 0.5;
 
-    // Create Tube Geometry
     const tubeGeometry = new THREE.TubeGeometry(path, 300, 4, 32, false);
 
-    // --- Textures & Materials ---
     const textureLoader = new THREE.TextureLoader();
     const texture = textureLoader.load(
       "https://s3-us-west-2.amazonaws.com/s.cdpn.io/68819/3d_space_5.jpg",
@@ -138,25 +131,23 @@ const TubeExperience: React.FC = () => {
     let cameraTargetPercentage = 0;
     let currentCameraPercentage = 0;
 
-    // GSAP ScrollTrigger animates tubePerc.percent from 0 to 0.96 as the user scrolls
     const tubePerc = { percent: 0 };
     gsap.to(tubePerc, {
       percent: 0.96,
       ease: "linear",
       duration: 10,
       scrollTrigger: {
-        trigger: ".scrollTarget", // Ensure you have an element with class "scrollTarget" in your page
+        trigger: ".scrollTarget",
         start: "top top",
         end: "bottom 100%",
         scrub: 5,
-        markers: true, // Remove markers in production
+        markers: false,
       },
       onUpdate: () => {
         cameraTargetPercentage = tubePerc.percent;
       },
     });
 
-    // --- Render Loop ---
     function renderLoop() {
       currentCameraPercentage = cameraTargetPercentage;
       updateCameraPercentage(currentCameraPercentage);
@@ -165,7 +156,6 @@ const TubeExperience: React.FC = () => {
     }
     renderLoop();
 
-    // --- Resize Handling ---
     function onWindowResize() {
       const width = window.innerWidth;
       const height = window.innerHeight;
@@ -179,7 +169,6 @@ const TubeExperience: React.FC = () => {
     // Cleanup
     return () => {
       window.removeEventListener("resize", onWindowResize);
-      // Optionally, dispose of renderer, scene, textures, etc.
     };
   }, []);
 

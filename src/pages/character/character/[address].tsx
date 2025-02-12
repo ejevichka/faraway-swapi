@@ -1,5 +1,6 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import cache from "~/utils/cache";
 import {
   TextField,
@@ -7,18 +8,22 @@ import {
   Card,
   CardContent,
   Typography,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { TPeopleResponse, TPerson } from "~/lib/api";
+import { StyledButton } from "~/components/styled-components-lib/EmotionStyledComponents";
 
-const API_URL = "https://swapi.dev/api/people/";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 type DetailPageProps = {
   characterDetails: TPerson | null;
+  address: string;
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
   let allPaths: { params: { chain: string; address: string } }[] = [];
-  let nextUrl = `${API_URL}`; // Initial URL for fetching people
+  let nextUrl = ${API_URL}; // Initial URL for fetching people
 
   try {
     // Loop to fetch all pages
@@ -35,9 +40,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
       }));
 
       allPaths = [...allPaths, ...paths];
-
       // If there's a next page, set the URL for the next page, otherwise exit loop
-      nextUrl = peopleData.next;
+      if (peopleData.next) {
+        nextUrl = peopleData.next;
+      } else {
+        break;
+      }
     }
 
     return {
@@ -60,7 +68,7 @@ export const getStaticProps: GetStaticProps<DetailPageProps> = async ({
     const { address } = params as { chain: string; address: string };
 
     // Fetch the specific person based on the address (which is the character's ID)
-    const response = await fetch(`${API_URL}${address}/`);
+    const response = await fetch(${API_URL}${address}/);
     const characterDetails: TPerson = await response.json();
 
     return {
@@ -76,17 +84,18 @@ export const getStaticProps: GetStaticProps<DetailPageProps> = async ({
   }
 };
 
-const TokenDetailPage = ({
+const DetailPage = ({
   characterDetails,
   address,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const [isFavorite, setIsFavorite] = useState(false);
   const [editableCharacterDetails, setEditableCharacterDetails] =
     useState<TPerson | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     // Load character details from localStorage
-    const savedCharacterDetails = cache.get(`characterDetails-${address}`);
+    const savedCharacterDetails = cache.get(characterDetails-${address});
 
     if (savedCharacterDetails) {
       // If character details are in localStorage, use them
@@ -95,7 +104,7 @@ const TokenDetailPage = ({
       // If not, make the API request and save to localStorage
       if (characterDetails) {
         setEditableCharacterDetails(characterDetails);
-        cache.set(`characterDetails-${address}`, characterDetails);
+        cache.set(characterDetails-${address}, characterDetails);
       }
     }
   }, [address, characterDetails]);
@@ -114,9 +123,22 @@ const TokenDetailPage = ({
 
   const handleSaveChanges = () => {
     if (editableCharacterDetails) {
-      cache.set(`characterDetails-${address}`, editableCharacterDetails);
-      alert("Changes saved!");
+      cache.set(
+        characterDetails-${address},
+        editableCharacterDetails as TPerson,
+      );
+      setSnackbarOpen(true);
     }
+  };
+
+  const handleSnackbarClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string,
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   if (!editableCharacterDetails) {
@@ -129,7 +151,17 @@ const TokenDetailPage = ({
   }
 
   return (
-    <div className="mesh3D">
+    <div className="mesh3D min-h-screen">
+      <div className="mx-auto max-w-2xl p-4 p-4">
+        <StyledButton
+          onClick={() => router.push("/")}
+          variant="contained"
+          color="primary"
+          sx={{ mb: 2 }}
+        >
+          Back to List
+        </StyledButton>
+      </div>
       <div className="mx-auto max-w-2xl p-4">
         <Card className="mb-4">
           <CardContent>
@@ -142,86 +174,127 @@ const TokenDetailPage = ({
         {/* Editable character details */}
         <Card>
           <CardContent>
-            <Typography variant="h6" component="h3" className="mb-4">
+            <Typography variant="h6" component="h3" sx={{ mb: 4 }}>
               Character Details
             </Typography>
             <TextField
               label="Name"
               value={editableCharacterDetails.name}
-              onChange={(e) => handleInputChange(e, "name")}
+              onChange={(e) =>
+                handleInputChange(
+                  e as React.ChangeEvent<HTMLInputElement>,
+                  "name",
+                )
+              }
               fullWidth
               variant="outlined"
-              className="mb-4"
+              sx={{ mb: 2 }}
             />
             <TextField
               label="Height"
               value={editableCharacterDetails.height}
-              onChange={(e) => handleInputChange(e, "height")}
+              onChange={(e) =>
+                handleInputChange(
+                  e as React.ChangeEvent<HTMLInputElement>,
+                  "height",
+                )
+              }
               fullWidth
               variant="outlined"
-              className="mb-4"
+              sx={{ mb: 2 }}
             />
             <TextField
               label="Mass"
               value={editableCharacterDetails.mass}
-              onChange={(e) => handleInputChange(e, "mass")}
+              onChange={(e) =>
+                handleInputChange(
+                  e as React.ChangeEvent<HTMLInputElement>,
+                  "mass",
+                )
+              }
               fullWidth
               variant="outlined"
-              className="mb-4"
+              sx={{ mb: 2 }}
             />
             <TextField
               label="Gender"
               value={editableCharacterDetails.gender}
-              onChange={(e) => handleInputChange(e, "gender")}
+              onChange={(e) =>
+                handleInputChange(
+                  e as React.ChangeEvent<HTMLInputElement>,
+                  "gender",
+                )
+              }
               fullWidth
               variant="outlined"
-              className="mb-4"
+              sx={{ mb: 2 }}
             />
             <TextField
               label="Birth Year"
               value={editableCharacterDetails.birth_year}
-              onChange={(e) => handleInputChange(e, "birth_year")}
+              onChange={(e) =>
+                handleInputChange(
+                  e as React.ChangeEvent<HTMLInputElement>,
+                  "birth_year",
+                )
+              }
               fullWidth
               variant="outlined"
-              className="mb-4"
+              sx={{ mb: 2 }}
             />
             <TextField
               label="Hair Color"
               value={editableCharacterDetails.hair_color}
-              onChange={(e) => handleInputChange(e, "hair_color")}
+              onChange={(e) =>
+                handleInputChange(
+                  e as React.ChangeEvent<HTMLInputElement>,
+                  "hair_color",
+                )
+              }
               fullWidth
               variant="outlined"
-              className="mb-4"
+              sx={{ mb: 2 }}
             />
             <TextField
               label="Eye Color"
               value={editableCharacterDetails.eye_color}
-              onChange={(e) => handleInputChange(e, "eye_color")}
+              onChange={(e) =>
+                handleInputChange(
+                  e as React.ChangeEvent<HTMLInputElement>,
+                  "eye_color",
+                )
+              }
               fullWidth
               variant="outlined"
-              className="mb-4"
+              sx={{ mb: 2 }}
             />
-            <Button
+            <StyledButton
               onClick={handleSaveChanges}
               variant="contained"
               color="primary"
-              className="mt-4"
+              sx={{ mb: 2 }}
             >
               Save Changes
-            </Button>
+            </StyledButton>
+            <Snackbar
+              open={snackbarOpen}
+              autoHideDuration={3000}
+              onClose={handleSnackbarClose}
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            >
+              <Alert
+                onClose={handleSnackbarClose}
+                severity="success"
+                sx={{ width: "100%" }}
+              >
+                Changes saved!
+              </Alert>
+            </Snackbar>
           </CardContent>
         </Card>
-
-        <Button
-          variant="contained"
-          color={isFavorite ? "secondary" : "primary"}
-          className="mt-4"
-        >
-          {isFavorite ? "Unmark as Favorite" : "Mark as Favorite"}
-        </Button>
       </div>
     </div>
   );
 };
 
-export default TokenDetailPage;
+export default DetailPage;
