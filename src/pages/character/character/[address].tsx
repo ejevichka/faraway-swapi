@@ -22,22 +22,25 @@ type DetailPageProps = {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  let allPaths: { params: { chain: string; address: string } }[] = [];
-  let nextUrl = API_URL;
+  let allPaths: { params: { address: string } }[] = [];
+  let nextUrl = process.env.NEXT_PUBLIC_API_URL; // Use your env variable
 
   try {
     while (nextUrl) {
       const response = await fetch(nextUrl);
       const peopleData: TPeopleResponse = await response.json();
 
-      const paths = peopleData.results.map((person) => ({
-        params: {
-          chain: "1",
-          address: person.url.split("/").pop() || "",
-        },
-      }));
+      // Generate paths using only "address"
+      const paths = peopleData.results
+        .map((person) => {
+          // Extract the address from the URL
+          const address = person.url.split("/").slice(-2, -1)[0];
+          return address ? { params: { address } } : null;
+        })
+        .filter(Boolean) as { params: { address: string } }[];
 
       allPaths = [...allPaths, ...paths];
+
       if (peopleData.next) {
         nextUrl = peopleData.next;
       } else {
@@ -62,9 +65,13 @@ export const getStaticProps: GetStaticProps<DetailPageProps> = async ({
   params,
 }) => {
   try {
-    const { address } = params as { chain: string; address: string };
+    // Only extract the "address" parameter
+    const { address } = params as { address: string };
 
-    const response = await fetch(`${API_URL}${address}/`);
+    // Fetch the specific person using the provided address
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}${address}/`,
+    );
     const characterDetails: TPerson = await response.json();
 
     return {
