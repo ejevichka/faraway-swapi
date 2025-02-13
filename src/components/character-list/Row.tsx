@@ -11,17 +11,15 @@ export interface CharacterRowProps {
 }
 
 const CharacterRow: React.FC<CharacterRowProps> = ({ index, style, data }) => {
-  // Get the character id from the URL (assumes the id is the second last segment)
   const id = index + 1;
 
   return (
     <Link href={`/character/character/${id}`}>
-      <div style={style} className="character-row p-2">
+      <div style={style} className="character-row m-2 p-8">
         <Card
           className={`w-full transform bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg transition-all hover:scale-105`}
         >
           <CardContent className="p-6">
-            {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               <Typography variant="h4" className="font-bold text-white">
                 {data.name}
@@ -33,7 +31,6 @@ const CharacterRow: React.FC<CharacterRowProps> = ({ index, style, data }) => {
               </div>
             </div>
 
-            {/* Body Grid: Basic Stats */}
             <div className="mt-4 grid grid-cols-1 gap-4 text-white md:grid-cols-2">
               <div>
                 <Typography variant="body1">

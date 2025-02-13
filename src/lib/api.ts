@@ -2,7 +2,6 @@ import * as z from "zod";
 
 const API_URL = "https://swapi.dev/api/people/";
 
-// Define a schema for a Star Wars character
 export const PersonSchema = z.object({
   name: z.string(),
   height: z.string(),
@@ -24,7 +23,6 @@ export const PersonSchema = z.object({
 
 export type TPerson = z.infer<typeof PersonSchema>;
 
-// Schema for API response with pagination support
 export const PeopleResponseSchema = z.object({
   count: z.number(),
   next: z.string().nullable(),
@@ -34,22 +32,14 @@ export const PeopleResponseSchema = z.object({
 
 export type TPeopleResponse = z.infer<typeof PeopleResponseSchema>;
 
-// Fetch characters from the SWAPI People API with pagination
-export const fetchPeople = async (page: number = 1): Promise<TPeopleResponse> => {
+export const fetchPeople = async (_page: number = 1): Promise<TPeopleResponse> => {
   const res = await fetch(`${API_URL}`);
   if (!res.ok) {
     throw new Error(`Failed to fetch people: ${res.statusText}`);
   }
 
   const data = await res.json();
-  return PeopleResponseSchema.parse(data); // Validate data using Zod schema
+  // ZOD
+  return PeopleResponseSchema.parse(data);
 };
 
-// Example usage: Fetch the first page of Star Wars characters
-(async () => {
-  try {
-    const peopleData = await fetchPeople();
-  } catch (error) {
-    console.error("Error fetching Star Wars people:", error);
-  }
-})();

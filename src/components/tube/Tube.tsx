@@ -1,4 +1,3 @@
-// components/TubeExperience.tsx
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
@@ -29,9 +28,6 @@ const TubeExperience: React.FC = () => {
     // --- Scene ---
     const scene = new THREE.Scene();
     scene.fog = new THREE.Fog(0x194794, 0, 100);
-
-    // --- Clock ---
-    const clock = new THREE.Clock();
 
     const camera = new THREE.PerspectiveCamera(45, ww / wh, 0.001, 200);
     const cameraGroup = new THREE.Group();

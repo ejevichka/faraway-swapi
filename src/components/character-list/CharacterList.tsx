@@ -8,7 +8,6 @@ import { TPerson } from "~/lib/api";
 import { gsap } from "gsap-trial";
 import CharacterListRow from "./RenderRow";
 
-// Cast the FixedSizeList so that TypeScript treats it as a valid JSX component.
 const FixedSizeList = OriginalFixedSizeList as unknown as React.FC<any>;
 
 const CharacterList = ({
@@ -41,7 +40,6 @@ const CharacterList = ({
     };
   }, []);
 
-  // Set container height to window height (100vh)
   useEffect(() => {
     if (typeof window !== "undefined") {
       setContainerHeight(window.innerHeight);

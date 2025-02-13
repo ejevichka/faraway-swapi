@@ -14,8 +14,6 @@ import {
 import { TPeopleResponse, TPerson } from "~/lib/api";
 import { StyledButton } from "~/components/styled-components-lib/EmotionStyledComponents";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
 type DetailPageProps = {
   characterDetails: TPerson | null;
   address: string;
@@ -82,7 +80,7 @@ export const getStaticProps: GetStaticProps<DetailPageProps> = async ({
       revalidate: 60, // ISR
     };
   } catch (error) {
-    console.error("Error fetching token or character details:", error);
+    console.error("Error fetching character details:", error);
     return { notFound: true };
   }
 };

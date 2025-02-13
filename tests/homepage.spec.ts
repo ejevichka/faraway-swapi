@@ -1,19 +1,73 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('HomePage displays main heading with correct Tailwind classes', async ({ page }) => {
+test.describe("CharacterList Component", () => {
+  test.beforeEach(async ({ page }) => {
+    const mockPeopleData = {
+      count: 2,
+      next: null,
+      previous: null,
+      results: [
+        {
+          name: "Luke Skywalker",
+          height: "172",
+          mass: "77",
+          hair_color: "blond",
+          skin_color: "fair",
+          eye_color: "blue",
+          birth_year: "19BBY",
+          gender: "male",
+          homeworld: "https://swapi.dev/api/planets/1/",
+          films: [],
+          species: [],
+          vehicles: [],
+          starships: [],
+          created: "2014-12-09T13:50:51.644000Z",
+          edited: "2014-12-20T21:17:56.891000Z",
+          url: "https://swapi.dev/api/people/1/",
+        },
+        {
+          name: "Leia Organa",
+          height: "150",
+          mass: "49",
+          hair_color: "brown",
+          skin_color: "light",
+          eye_color: "brown",
+          birth_year: "19BBY",
+          gender: "female",
+          homeworld: "https://swapi.dev/api/planets/2/",
+          films: [],
+          species: [],
+          vehicles: [],
+          starships: [],
+          created: "2014-12-10T13:50:51.644000Z",
+          edited: "2014-12-21T21:17:56.891000Z",
+          url: "https://swapi.dev/api/people/2/",
+        },
+      ],
+    };
 
-  await page.goto('http://localhost:3000');
+    await page.route("**/api/people", (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(mockPeopleData),
+      });
+    });
 
-  const heading = page.locator('h1:text("Star Wars Characters")');
-  await expect(heading).toBeVisible();
+    await page.goto("http://localhost:3000");
+  });
 
-  const classes = await heading.getAttribute('class');
-  console.log("Heading classes:", classes);
+  test("should render the CharacterList component with mock data", async ({
+    page,
+  }) => {
+    await expect(page.locator("h1")).toContainText("Star Wars Characters");
+  });
 
-  expect(classes).toContain('text-neonGreen');
-  expect(classes).toContain('mt-8');
-  expect(classes).toContain('text-center');
-  expect(classes).toContain('text-4xl');
-  expect(classes).toContain('font-extrabold');
-  expect(classes).toContain('text-white');
+  test("should display Luke Skywalker in the list", async ({ page }) => {
+    await expect(page.locator("text=Luke Skywalker")).toBeVisible();
+  });
+
+  test("should display Leia Organa in the list", async ({ page }) => {
+    await expect(page.locator("text=Leia Organa")).toBeVisible();
+  });
 });

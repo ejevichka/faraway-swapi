@@ -76,8 +76,7 @@ const HomePage = ({
   };
 
   return (
-    <div>
-      {/* client only */}
+    <div className=" bg-black">
       <TubeExperience />
 
       <h1 className="text-neonGreen mt-8 text-center text-4xl font-extrabold text-white">
@@ -87,32 +86,34 @@ const HomePage = ({
         <p className="mt-4 text-center text-red-500">Error: {error}</p>
       ) : (
         <>
-          <div className="mt-6 flex justify-center text-white">
-            <StyledInput
-              label="Search Characters"
-              variant="outlined"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              className="w-1/3"
-            />
-          </div>
-          <div className="controls mt-6 flex justify-center text-white">
-            <div className="w-full rounded-lg bg-white p-8 shadow-lg sm:w-1/3">
-              <FormControl fullWidth variant="outlined">
-                <InputLabel id="demo-simple-select-label">Gender</InputLabel>
-                <StyledSelect
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value as string)}
-                  label="Gender"
-                >
-                  <MenuItem value="">All Genders</MenuItem>
-                  <MenuItem value="male">Male</MenuItem>
-                  <MenuItem value="female">Female</MenuItem>
-                  <MenuItem value="n/a">Droid</MenuItem>
-                </StyledSelect>
-              </FormControl>
+          <div className="fixed left-0 right-0 top-[60px] z-50 flex flex-col items-center space-y-4">
+            <div className="flex w-full justify-center">
+              <StyledInput
+                label="Search Characters"
+                variant="outlined"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="w-1/3"
+              />
+            </div>
+            <div className="controls flex w-full justify-center">
+              <div className="w-full rounded-lg bg-white p-8 shadow-lg sm:w-1/3">
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel id="demo-simple-select-label">Gender</InputLabel>
+                  <StyledSelect
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value as string)}
+                    label="Gender"
+                  >
+                    <MenuItem value="">All Genders</MenuItem>
+                    <MenuItem value="male">Male</MenuItem>
+                    <MenuItem value="female">Female</MenuItem>
+                    <MenuItem value="n/a">Droid</MenuItem>
+                  </StyledSelect>
+                </FormControl>
+              </div>
             </div>
           </div>
 
