@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import CharacterList from "../components/character-list/CharacterList";
 import { fetchPeople, TPerson, TPeopleResponse } from "~/lib/api";

@@ -32,8 +32,8 @@ export const PeopleResponseSchema = z.object({
 
 export type TPeopleResponse = z.infer<typeof PeopleResponseSchema>;
 
-export const fetchPeople = async (_page: number = 1): Promise<TPeopleResponse> => {
-  const res = await fetch(`${API_URL}`);
+export const fetchPeople = async (page = 1): Promise<TPeopleResponse> => {
+  const res = await fetch(`${API_URL}?page=${page}`);
   if (!res.ok) {
     throw new Error(`Failed to fetch people: ${res.statusText}`);
   }

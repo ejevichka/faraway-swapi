@@ -1,14 +1,9 @@
 import React, { useState, useMemo, useEffect } from "react";
 import cache from "~/utils/cache";
-import {
-  FixedSizeList as OriginalFixedSizeList,
-  type ListChildComponentProps,
-} from "react-window";
+import { FixedSizeList, type ListChildComponentProps } from "react-window";
 import { TPerson } from "~/lib/api";
 import { gsap } from "gsap-trial";
 import CharacterListRow from "./RenderRow";
-
-const FixedSizeList = OriginalFixedSizeList as unknown as React.FC<any>;
 
 const CharacterList = ({
   data,
@@ -54,7 +49,7 @@ const CharacterList = ({
 
     if (isClient) {
       data.forEach((_character, index) => {
-        const savedCharacterDetails = cache.get(`${index + 1}`);
+        const savedCharacterDetails = cache.get(`${index + 1}`) as TPerson;
         if (savedCharacterDetails) {
           filteredCharacters[index] = savedCharacterDetails;
         }
@@ -82,6 +77,8 @@ const CharacterList = ({
         style={{ overflow: "auto", height: "100vh", marginTop: "400px" }}
       >
         <div className="flair flair--3"></div>
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore */}
         <FixedSizeList
           height={containerHeight}
           itemCount={filteredAndSortedData.length}
