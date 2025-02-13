@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("CharacterList Component", () => {
+test("CharacterList Component", () => {
   test.beforeEach(async ({ page }) => {
     const mockPeopleData = {
       count: 2,
