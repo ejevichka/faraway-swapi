@@ -1,99 +1,44 @@
-Faraway SWAPI
-Faraway SWAPI — это приложение на Next.js, которое отображает данные о персонажах Звёздных войн, полученные с SWAPI. Проект включает интерактивный, анимированный интерфейс, созданный с использованием Material UI, Tailwind CSS и GSAP, а также оптимизации производительности посредством react-window и Incremental Static Regeneration (ISR).
+Starwars SWAPI
+Starwars SWAPI is a Single Page Application (SPA) built with React and TypeScript that uses the Star Wars API as its data source. The application consists of two main pages:
 
-Функциональные возможности
-Список персонажей Звёздных войн
+# Features
 
-Предоставляет возможности поиска и фильтрации по полу.
-Использует локальное кэширование (с помощью утилиты cache, оборачивающей localStorage) для сохранения изменений между сессиями.
-Страница с подробной информацией о персонаже
+# Character Detail Page:
 
-Динамически генерируемые страницы с использованием методов Next.js getStaticPaths и getStaticProps с ISR.
-Редактируемые данные о персонаже с использованием компонентов форм Material UI и компонентов, стилизованных с помощью Emotion.
-Управление избранным и динамическое обновление данных без перезагрузки страницы.
-Анимации и визуальные эффекты
+Detailed view for each character.
+Local editing of character details (using Material UI components and Emotion-styled components).
+Dynamic favorite management and caching via localStorage.
 
-Плавные переходы интерфейса и интерактивные эффекты с использованием GSAP (gsap-trial) и ScrollTrigger.
-Космический фон «tube experience», созданный с помощью Three.js, с эффектами bloom (послерендеринг).
-Адаптивный и современный дизайн
+# User Interface & Styling:
 
-Tailwind CSS для утилитарного и адаптивного стайлинга.
-Компоненты Material UI, стилизованные с помощью Emotion, для чистого, современного и космического внешнего вида.
-Тестирование и производительность
+Tailwind CSS for layout, spacing, positioning, colors, and effects.
+Material UI for core UI components (buttons, cards, inputs, etc.), with custom styling via Emotion.
+A cosmic, minimalistic design inspired by the Star Wars aesthetic.
+Animations & Visual Effects:
 
-End-to-end тестирование с использованием Playwright.
-Incremental Static Regeneration (ISR) для быстрых загрузок страниц и преимуществ для SEO.
-Анализ и оптимизация бандлов с использованием встроенных возможностей Next.js и @next/bundle-analyzer.
-Начало работы
-Необходимые компоненты
-Node.js (версия 14 или выше)
-Yarn (v1 или v3) – используйте один менеджер пакетов для всего проекта.
-База данных Prisma, если планируете расширять функциональность backend.
-Установка
-Клонирование репозитория:
+Smooth UI transitions and animations with GSAP (gsap-trial) and ScrollTrigger.
+Three.js cosmic background experience.
 
-git clone https://github.com/your-username/faraway-swapi.git
-cd faraway-swapi
-Установка зависимостей:
+# Static Generation & Incremental Static Regeneration (ISR):
+
+Pages are pre-rendered using Next.js getStaticPaths and getStaticProps, ensuring fast load times and SEO benefits.
+ISR updates pages in the background at a set interval (every 60 seconds), serving stale content initially for faster response times.
 
 
-yarn install
-Настройка переменных окружения:
-Создайте файл .env.local в корне проекта и добавьте следующие переменные:
-
-env
-NEXT_PUBLIC_API_URL=https://swapi.dev/api/people/
+# Caching:
+Edited character data is cached using a custom utility module (cache), which wraps around localStorage. This approach saves favorite data and user edits across sessions without additional server requests.
 
 
-Чтобы запустить сервер разработки:
+Justification for Generating Paths:
+
+Performance:
+Pages are pre-rendered during build time and served as static HTML. Pre-generating paths for a subset of tokens ensures near-instant load times for frequently accessed pages.
+
+Scalability:
+Using ISR with a subset of pre-generated paths allows the application to scale effectively. New or infrequently accessed tokens are rendered on-demand without impacting the performance of the pre-generated pages.
 
 
-yarn dev
-Откройте http://localhost:3000 в браузере.
-
-Сборка для продакшена
-Чтобы создать оптимизированную сборку и запустить продакшен сервер:
-
-
-yarn build
-yarn start
-Запуск тестов
-Проект использует Playwright для end-to-end тестирования. Для запуска тестов выполните:
-
-
-yarn test
-Убедитесь, что вы правильно настроили Playwright (см. документацию Playwright).
-
-
-Задача
-Используя Star Wars API (https://swapi.dev/) в качестве источника данных, реализовать SPA приложение React и Typescript, состоящее из двух страниц. 
-На главной странице отобразить список или карточки персонажей, к списку добавить возможность пагинации и поиска с использованием API. 
-Реализовать страницу с подробной информацией по выбранному персонажу. На эту страницу добавить возможность редактировать и сохранять информацию о персонаже локально, без отправки на сервер. 
- 
-Плюсы: 
-+ Аккуратная верстка 
-+ Использование UI фреймворка (Material, Ant, Bootstrap и т.п.) 
-В качестве дополнительного задания: 
-+ Тесты
-
-Решение:
-Статическая генерация:
-Использование Next.js getStaticPaths и getStaticProps для предварительного рендеринга, что обеспечивает быстрое время загрузки и преимущества для SEO.
-Кэширование:
-Редактированные данные кэшируются с использованием утилитного модуля (cache), который оборачивает localStorage. Это обеспечивает сохранение данных избранного между сессиями без дополнительного запроса на сервер
-
-Incremental Static Regeneration (ISR):
-Статическая генерация: Страницы предварительно рендерятся во время сборки и выдаются как статичный HTML.
-Регенирация: Страницы обновляются в фоновом режиме через заданный интервал (каждые 60 секунд). Когда запрашивается страница, которая требует пере-валидации, Next.js сначала возвращает устаревшую страницу, а затем обновляет её в фоне.
-
-Обоснование генерации путей 
-Производительность:
-Предварительная генерация путей обеспечивает почти мгновенную загрузку этих страниц для пользователей.
-Масштабируемость:
-Использование ISR с подмножеством предварительно сгенерированных путей позволяет приложению эффективно масштабироваться
-
-
-TODO: (что не успела добить нормально)
+TODO:
 add turbopack
 add i18n
 vercel setups (linters)
